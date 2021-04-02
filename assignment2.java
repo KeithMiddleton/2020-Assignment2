@@ -3,7 +3,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.Parnet;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.ListView;
@@ -23,21 +23,24 @@ public class assignment2 extends Application
     public void start(Stage primaryStage) throws Exception
     {
         SplitPane splitPane = new SplitPane();
-        SplitPane buttonPane = new SplitPane();
+        //SplitPane buttonPane = new SplitPane();
         ListView leftList = new ListView();
         ListView rightList = new ListView();
-        Button downloadButton = new Button();
-        Button uploadButton = new Button();
+        Button downloadButton = new Button("Download");
+        Button uploadButton = new Button("Upload");
 
         VBox left = new VBox(leftList);
         VBox right = new VBox(rightList);
-        VBox leftButton = new VBox(downloadButton);
-        VBox rightButton = new VBox(uploadButton);
+        //VBox leftButton = new VBox(downloadButton);
+        //VBox rightButton = new VBox(uploadButton);
 
         splitPane.getItems().addAll(left, right);
-        buttonPane.getItems().addAll(leftButton, rightButton);
+        //buttonPane.getItems().addAll(leftButton, rightButton);
 
-        VBox mainFrm = new VBox(buttonPane);
+        HBox buttons = new HBox(downloadButton);
+        buttons.getChildren().add(uploadButton);
+
+        VBox mainFrm = new VBox(buttons);
         mainFrm.getChildren().add(splitPane);
 
         Scene scene = new Scene(mainFrm);
