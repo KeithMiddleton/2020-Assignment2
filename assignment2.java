@@ -3,6 +3,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.stage.FileChooser;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
@@ -16,6 +17,15 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.FileWriter;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.io.DataOutputStream;
+import java.io.DataInputStream;
+import java.net.Socket;
+
 public class assignment2 extends Application
 {
 
@@ -23,7 +33,6 @@ public class assignment2 extends Application
     public void start(Stage primaryStage) throws Exception
     {
         SplitPane splitPane = new SplitPane();
-        //SplitPane buttonPane = new SplitPane();
         ListView leftList = new ListView();
         ListView rightList = new ListView();
         Button downloadButton = new Button("Download");
@@ -31,17 +40,43 @@ public class assignment2 extends Application
 
         VBox left = new VBox(leftList);
         VBox right = new VBox(rightList);
-        //VBox leftButton = new VBox(downloadButton);
-        //VBox rightButton = new VBox(uploadButton);
 
         splitPane.getItems().addAll(left, right);
-        //buttonPane.getItems().addAll(leftButton, rightButton);
 
         HBox buttons = new HBox(downloadButton);
         buttons.getChildren().add(uploadButton);
 
         VBox mainFrm = new VBox(buttons);
         mainFrm.getChildren().add(splitPane);
+
+        uploadButton.setOnAction(e -> 
+        {
+            Socket client = new Socket("127.0.0.1", 6969);
+            FileChooser fileChooser = new FileChooser();
+            File selectedFile = fileChooser.showOpenDialog(primaryStage);
+            DataOutputStream dout = new DataOutputStream(client.getOutputStream());
+            dout.writeUTF("UPLOAD " + selectedFile.getName() + "\n" + new String(Files.readAllBytes(Paths.get(selectedFile.getAbsolutePath()), StandardCharsets.UTF_8)));
+            dout.flush();
+            dout.close();
+            client.close();
+        });
+
+        downloadButton.setOnAction(e -> 
+        {
+            Socket client = new Socket("127.0.0.1", 6969);
+            DataOutputStream dout = new DataOutputStream(client.getOutputStream());
+            dout.writeUTF("DOWNLOAD " + balls);
+            dout.flush();
+            dout.close();
+            DataInputStream din = new DataInputStream(client.getInputStream());
+            String data = (String)din.readUTF();
+            FileChooser fileChooser = new FileChooser();
+            File selectedFile = fileChooser.showOpenDialog(primaryStage);
+            FileWriter writer = new FileWriter(selectedFile.getAbsolutePath());
+            writer.write(data);
+            din.close();
+            client.close();
+        });
 
         Scene scene = new Scene(mainFrm);
         primaryStage.setScene(scene);
