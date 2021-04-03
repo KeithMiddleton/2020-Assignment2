@@ -65,7 +65,7 @@ public class assignment2 extends Application
         }
         catch (Exception ex)
         {
-            System.out.println("Error!");
+            ex.printStackTrace();
         }
     }
 
@@ -108,7 +108,7 @@ public class assignment2 extends Application
             }
             catch (Exception ex)
             {
-                System.out.println("Error!");
+                ex.printStackTrace();
             }
         });
 
@@ -133,7 +133,7 @@ public class assignment2 extends Application
             }
             catch (Exception ex)
             {
-                System.out.println("Error!");
+                ex.printStackTrace();
             }
         });
 
