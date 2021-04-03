@@ -8,7 +8,7 @@ public class assignment2Server {
 	protected assignment2ServerThread[] threads    = null;
 	protected int numClients                = 0;
 
-	public static int SERVER_PORT = 16789;
+	public static int SERVER_PORT = 6969;
 	public static int MAX_CLIENTS = 25;
 
 	public assignment2Server() {

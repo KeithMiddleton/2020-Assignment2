@@ -22,12 +22,44 @@ import java.io.IOException;
 import java.io.FileWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.io.DataOutputStream;
 import java.io.DataInputStream;
 import java.net.Socket;
 
 public class assignment2 extends Application
 {
+
+    public void refreshShared(ListView local)
+    {
+        local.getItems().clear();
+        File sharedFolder = new File("/shared");
+        File[] files = sharedFolder.listFiles();
+
+        for (File f : files)
+        {
+            local.getItems().add(f.getName());
+        }
+    }
+
+    public void refreshRemoteShared(ListView remote)
+    {
+        remote.getItems().clear();
+        Socket client = new Socket("127.0.0.1", 6969);
+        DataOutputStream dout = new DataOutputStream(client.getOuptutStream());
+        dout.writeUTF("DIR");
+        dout.flush();
+        dout.close();
+        DataInputStream din = new DataInputStream(client.getInputStream());
+        String data = (String)din.readUTF();
+        din.close();
+        client.close();
+        String[] files = data.split("\n");
+        for (String f : files)
+        {
+            remote.getItems().add(f);
+        }
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception
@@ -53,10 +85,16 @@ public class assignment2 extends Application
         {
             Socket client = new Socket("127.0.0.1", 6969);
             DataOutputStream dout = new DataOutputStream(client.getOutputStream());
-            dout.writeUTF("UPLOAD " + leftList.getSelectionModel().getSelectedItem() + "\n" + new String(Files.readAllBytes(Paths.get(leftList.getSelectionModel().getSelectedItem()), StandardCharsets.UTF_8)));
+            dout.writeUTF("UPLOAD " + leftList.getSelectionModel().getSelectedItem() + "\n" + new String(Files.readAllBytes(Paths.get("shared/" + leftList.getSelectionModel().getSelectedItem()), StandardCharsets.UTF_8)));
             dout.flush();
             dout.close();
+            DataInputStream din = new DataInputStream(client.getInputStream());
+            String data = (String)din.readUTF();
+            //Check Response
+            din.close();
             client.close();
+            refreshShared(leftList);
+            refreshRemoteShared(rightList);
         });
 
         downloadButton.setOnAction(e -> 
@@ -68,10 +106,16 @@ public class assignment2 extends Application
             dout.close();
             DataInputStream din = new DataInputStream(client.getInputStream());
             String data = (String)din.readUTF();
+            //Check Response
+            FileWriter writer = new FileWriter("shared/" + rightList.getSelectionModel().getSelectedItem());
             writer.write(data);
             din.close();
             client.close();
+            refreshShared(leftList);
+            refreshRemoteShared(rightList);
         });
+
+        refreshShared(leftList);
 
         Scene scene = new Scene(mainFrm);
         primaryStage.setScene(scene);

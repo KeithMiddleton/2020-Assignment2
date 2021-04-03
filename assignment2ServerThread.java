@@ -42,7 +42,7 @@ public class assignment2ServerThread extends Thread{
 
 			for (File file : files) {
 			    if (file.isFile()) {
-			        out.println(file.getName());
+			        out.println(file.getName() + "\n");
 			    }
 			}
 			return true;
