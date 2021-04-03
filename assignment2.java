@@ -23,6 +23,7 @@ import java.io.FileWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.nio.file.Files;
 import java.io.DataOutputStream;
 import java.io.DataInputStream;
 import java.net.Socket;
@@ -46,7 +47,7 @@ public class assignment2 extends Application
     {
         remote.getItems().clear();
         Socket client = new Socket("127.0.0.1", 6969);
-        DataOutputStream dout = new DataOutputStream(client.getOuptutStream());
+        DataOutputStream dout = new DataOutputStream(client.getOutputStream());
         dout.writeUTF("DIR");
         dout.flush();
         dout.close();
