@@ -45,20 +45,27 @@ public class assignment2 extends Application
 
     public void refreshRemoteShared(ListView remote)
     {
-        remote.getItems().clear();
-        Socket client = new Socket("127.0.0.1", 6969);
-        DataOutputStream dout = new DataOutputStream(client.getOutputStream());
-        dout.writeUTF("DIR");
-        dout.flush();
-        dout.close();
-        DataInputStream din = new DataInputStream(client.getInputStream());
-        String data = (String)din.readUTF();
-        din.close();
-        client.close();
-        String[] files = data.split("\n");
-        for (String f : files)
+        try
         {
-            remote.getItems().add(f);
+            remote.getItems().clear();
+            Socket client = new Socket("127.0.0.1", 6969);
+            DataOutputStream dout = new DataOutputStream(client.getOutputStream());
+            dout.writeUTF("DIR");
+            dout.flush();
+            dout.close();
+            DataInputStream din = new DataInputStream(client.getInputStream());
+            String data = (String)din.readUTF();
+            din.close();
+            client.close();
+            String[] files = data.split("\n");
+            for (String f : files)
+            {
+                remote.getItems().add(f);
+            }
+        }
+        catch (Exception ex)
+        {
+            System.out.println("Error!");
         }
     }
 
@@ -84,36 +91,50 @@ public class assignment2 extends Application
 
         uploadButton.setOnAction(e -> 
         {
-            Socket client = new Socket("127.0.0.1", 6969);
-            DataOutputStream dout = new DataOutputStream(client.getOutputStream());
-            dout.writeUTF("UPLOAD " + leftList.getSelectionModel().getSelectedItem() + "\n" + new String(Files.readAllBytes(Paths.get("shared/" + leftList.getSelectionModel().getSelectedItem())), StandardCharsets.UTF_8));
-            dout.flush();
-            dout.close();
-            DataInputStream din = new DataInputStream(client.getInputStream());
-            String data = (String)din.readUTF();
-            //Check Response
-            din.close();
-            client.close();
-            refreshShared(leftList);
-            refreshRemoteShared(rightList);
+            try
+            {
+                Socket client = new Socket("127.0.0.1", 6969);
+                DataOutputStream dout = new DataOutputStream(client.getOutputStream());
+                dout.writeUTF("UPLOAD " + leftList.getSelectionModel().getSelectedItem() + "\n" + new String(Files.readAllBytes(Paths.get("shared/" + leftList.getSelectionModel().getSelectedItem())), StandardCharsets.UTF_8));
+                dout.flush();
+                dout.close();
+                DataInputStream din = new DataInputStream(client.getInputStream());
+                String data = (String)din.readUTF();
+                //Check Response
+                din.close();
+                client.close();
+                refreshShared(leftList);
+                refreshRemoteShared(rightList);
+            }
+            catch (Exception ex)
+            {
+                System.out.println("Error!");
+            }
         });
 
         downloadButton.setOnAction(e -> 
         {
-            Socket client = new Socket("127.0.0.1", 6969);
-            DataOutputStream dout = new DataOutputStream(client.getOutputStream());
-            dout.writeUTF("DOWNLOAD " + rightList.getSelectionModel().getSelectedItem());
-            dout.flush();
-            dout.close();
-            DataInputStream din = new DataInputStream(client.getInputStream());
-            String data = (String)din.readUTF();
-            //Check Response
-            FileWriter writer = new FileWriter("shared/" + rightList.getSelectionModel().getSelectedItem());
-            writer.write(data);
-            din.close();
-            client.close();
-            refreshShared(leftList);
-            refreshRemoteShared(rightList);
+            try
+            {
+                Socket client = new Socket("127.0.0.1", 6969);
+                DataOutputStream dout = new DataOutputStream(client.getOutputStream());
+                dout.writeUTF("DOWNLOAD " + rightList.getSelectionModel().getSelectedItem());
+                dout.flush();
+                dout.close();
+                DataInputStream din = new DataInputStream(client.getInputStream());
+                String data = (String)din.readUTF();
+                //Check Response
+                FileWriter writer = new FileWriter("shared/" + rightList.getSelectionModel().getSelectedItem());
+                writer.write(data);
+                din.close();
+                client.close();
+                refreshShared(leftList);
+                refreshRemoteShared(rightList);
+            }
+            catch (Exception ex)
+            {
+                System.out.println("Error!");
+            }
         });
 
         refreshShared(leftList);
