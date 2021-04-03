@@ -52,10 +52,8 @@ public class assignment2 extends Application
         uploadButton.setOnAction(e -> 
         {
             Socket client = new Socket("127.0.0.1", 6969);
-            FileChooser fileChooser = new FileChooser();
-            File selectedFile = fileChooser.showOpenDialog(primaryStage);
             DataOutputStream dout = new DataOutputStream(client.getOutputStream());
-            dout.writeUTF("UPLOAD " + selectedFile.getName() + "\n" + new String(Files.readAllBytes(Paths.get(selectedFile.getAbsolutePath()), StandardCharsets.UTF_8)));
+            dout.writeUTF("UPLOAD " + leftList.getSelectionModel().getSelectedItem() + "\n" + new String(Files.readAllBytes(Paths.get(leftList.getSelectionModel().getSelectedItem()), StandardCharsets.UTF_8)));
             dout.flush();
             dout.close();
             client.close();
@@ -65,14 +63,11 @@ public class assignment2 extends Application
         {
             Socket client = new Socket("127.0.0.1", 6969);
             DataOutputStream dout = new DataOutputStream(client.getOutputStream());
-            dout.writeUTF("DOWNLOAD " + balls);
+            dout.writeUTF("DOWNLOAD " + rightList.getSelectionModel().getSelectedItem());
             dout.flush();
             dout.close();
             DataInputStream din = new DataInputStream(client.getInputStream());
             String data = (String)din.readUTF();
-            FileChooser fileChooser = new FileChooser();
-            File selectedFile = fileChooser.showOpenDialog(primaryStage);
-            FileWriter writer = new FileWriter(selectedFile.getAbsolutePath());
             writer.write(data);
             din.close();
             client.close();
