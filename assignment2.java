@@ -86,7 +86,7 @@ public class assignment2 extends Application
         {
             Socket client = new Socket("127.0.0.1", 6969);
             DataOutputStream dout = new DataOutputStream(client.getOutputStream());
-            dout.writeUTF("UPLOAD " + leftList.getSelectionModel().getSelectedItem() + "\n" + new String(Files.readAllBytes(Paths.get("shared/" + leftList.getSelectionModel().getSelectedItem()), StandardCharsets.UTF_8)));
+            dout.writeUTF("UPLOAD " + leftList.getSelectionModel().getSelectedItem() + "\n" + new String(Files.readAllBytes(Paths.get("shared/" + leftList.getSelectionModel().getSelectedItem())), StandardCharsets.UTF_8));
             dout.flush();
             dout.close();
             DataInputStream din = new DataInputStream(client.getInputStream());
