@@ -36,7 +36,6 @@ public class assignment2ServerThread extends Thread{
 
 	protected boolean processCommand(){
 		String temp = null;
-		String command = null;
 		String fName = null;
 		String fContent = null;
 		try {
