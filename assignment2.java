@@ -35,11 +35,11 @@ public class assignment2 extends Application
     {
         local.getItems().clear();
         File sharedFolder = new File("/shared");
-        File[] files = sharedFolder.listFiles();
+        File[] sharedFiles = sharedFolder.listFiles();
 
-        for (File f : files)
+        for (int i = 0; i < files.length; i++)
         {
-            local.getItems().add(f.getName());
+            local.getItems().add(sharedFiles[i].getName());
         }
     }
 
@@ -57,10 +57,10 @@ public class assignment2 extends Application
             String data = (String)din.readUTF();
             din.close();
             client.close();
-            String[] files = data.split("\n");
-            for (String f : files)
+            String[] sharedFiles = data.split("\n");
+            for (int i = 0; i < sharedFiles.length; i++)
             {
-                remote.getItems().add(f);
+                remote.getItems().add(sharedFiles[i]);
             }
         }
         catch (Exception ex)
