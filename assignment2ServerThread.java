@@ -34,7 +34,29 @@ public class assignment2ServerThread extends Thread{
 		}
 	}
 
-	protected boolean processCommand(String cmd){
+	protected boolean processCommand(){
+		String temp = "";
+		String fName = "";
+		String fContent = "";
+		try {
+			temp = in.readLine();
+		} catch (IOException e) {
+			System.err.println("Error reading command from socket.");
+			return true;
+		}
+		if (temp == "") {
+			return true;
+		}
+		StringTokenizer st = new StringTokenizer(temp);
+		String command = st.nextToken();
+		if (st.hasMoreTokens()) {
+			fName = temp.substring(command.length()+1, temp.length());
+		}
+		return processCommand(command, fName, fContent);	
+	}
+
+
+	protected boolean processCommand(String cmd, String fName, String fContent){
 		if(cmd.equalsIgnoreCase("DIR")){
 
 			File sharedFolder = new File("/shared");
@@ -47,26 +69,38 @@ public class assignment2ServerThread extends Thread{
 			}
 			return true;
 		}
-		else{
-			out.println("Invalid Command");
-			return true;
-		}
-	}
-
-	protected boolean processCommand(String cmd, String args){
-		if(cmd.equalsIgnoreCase("UPLOAD")){
-			//Temporary
-			out.println("Uploaded.")
+		else if(cmd.equalsIgnoreCase("UPLOAD")){
+			try{	
+				File tempUpload = new File("/shared/" + fName);
+				FileWriter uploadWriter = new FileWriter(tempUpload);
+      			uploadWriter.write(fContent);
+      			uploadWriter.close();
+      			out.println("Uploaded.");
+			}
+			catch(IOException e){
+				out.println("Cannot Upload.");
+			}
 			return true;
 		}
 		else if(cmd.equalsIgnoreCase("DOWNLOAD")){
-			File tempDownload = new File("/shared/" + args);
-			if(tempDownload.exists()){
-				//This is temporary
-				out.println("File exists.")
+			File tempDownload = new File("/shared/" + fName);
+			String send = "";
+			try{
+				if(tempDownload.exists()){
+				Scanner sc = new Scanner(tempDownload);
+
+				while (sc.hasNextLine())
+				{
+					send += sc.nextLine();
+				}
+				out.println("Downloaded.");
 			}
-			else{
-				out.println("File does not exist.")
+				else{
+					out.println("File does not exist.");
+				}
+			}
+			catch(IOException e){
+				out.println("Error in download.");
 			}
 			return true;
 		}
