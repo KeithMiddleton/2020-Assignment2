@@ -37,7 +37,7 @@ public class assignment2 extends Application
         File sharedFolder = new File("/shared");
         File[] sharedFiles = sharedFolder.listFiles();
 
-        for (int i = 0; i < files.length; i++)
+        for (int i = 0; i < sharedFolder.length; i++)
         {
             local.getItems().add(sharedFiles[i].getName());
         }
