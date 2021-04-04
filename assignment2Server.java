@@ -14,9 +14,7 @@ public class assignment2Server {
 	public assignment2Server() {
 		try {
 			serverSocket = new ServerSocket(SERVER_PORT);
-			System.out.println("---------------------------");
-			System.out.println("Chat Server Application is running");
-			System.out.println("---------------------------");
+			System.out.println("Running...");
 			System.out.println("Listening to port: "+SERVER_PORT);
 			threads = new assignment2ServerThread[MAX_CLIENTS];
 			while(true) {
